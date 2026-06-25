@@ -1,4 +1,4 @@
-@'
+$content = @'
 name: 02 - Publication GHCR
 
 on:
@@ -52,6 +52,6 @@ jobs:
       - name: Affichage du digest
         run: |
           echo "Image publiee dans GHCR"
-          echo "Tags : ${{ steps.meta.outputs.tags }}"
           echo "Digest : ${{ steps.build.outputs.digest }}"
-'@ | Out-File -FilePath ".github\workflows\02-publish-ghcr.yml"
+'@
+$content | Out-File -FilePath ".github\workflows\02-publish-ghcr.yml" -Encoding UTF8
