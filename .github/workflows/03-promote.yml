@@ -1,0 +1,85 @@
+@'
+name: 03 - Promotion Recette vers Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Tag de l image a promouvoir (ex: sha-abc1234)'
+        required: true
+        type: string
+      confirm:
+        description: 'Confirmer la promotion (oui)'
+        required: true
+        default: 'oui'
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+
+  validate-recette:
+    name: Validation en Recette
+    runs-on: ubuntu-latest
+    environment: recette
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Connexion a GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull de l image a valider
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
+          echo "Validation de l image : $IMAGE"
+          docker pull $IMAGE
+
+      - name: Test de l image en recette
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
+          docker run -d --name recette-test -p 8080:80 $IMAGE
+          sleep 5
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+          echo "Code HTTP recette : $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Validation recette echouee"
+            exit 1
+          fi
+          echo "Validation recette reussie"
+          docker stop recette-test && docker rm recette-test
+
+  promote-production:
+    name: Promotion vers Production Simulee
+    runs-on: ubuntu-latest
+    environment: production-simulee
+    needs: validate-recette
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Connexion a GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Promotion sans rebuild
+        run: |
+          SOURCE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
+          TARGET="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:production"
+          echo "Promotion : $SOURCE vers $TARGET"
+          docker pull $SOURCE
+          docker tag $SOURCE $TARGET
+          docker push $TARGET
+          echo "Image promue en production simulee sans rebuild"
+'@ | Out-File -FilePath ".github\workflows\03-promote.yml"
