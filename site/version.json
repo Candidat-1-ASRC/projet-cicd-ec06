@@ -1,0 +1,11 @@
+@'
+{
+  "version": "1.0.0",
+  "auteur": "Candidat-1-ASRC",
+  "formation": "ASRC",
+  "module": "EC06 - CI/CD",
+  "bloc": "BC02",
+  "description": "Site statique servi par Nginx via pipeline CI/CD GitHub Actions",
+  "environnements": ["recette", "production-simulee"]
+}
+'@ | Out-File -FilePath "site\version.json"

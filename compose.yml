@@ -1,0 +1,31 @@
+@'
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: catal-log:local
+    container_name: catal-log-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  whoami:
+    image: traefik/whoami:latest
+    container_name: catal-log-whoami
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+
+networks:
+  default:
+    name: catal-log-network
+    driver: bridge
+'@ | Out-File -FilePath "compose.yml"
