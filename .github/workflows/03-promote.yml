@@ -1,4 +1,3 @@
-@'
 name: 03 - Promotion Recette vers Production
 
 on:
@@ -36,19 +35,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull de l image a valider
+      - name: Pull de l image
         run: |
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
           echo "Validation de l image : $IMAGE"
           docker pull $IMAGE
 
-      - name: Test de l image en recette
+      - name: Test en recette
         run: |
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
           docker run -d --name recette-test -p 8080:80 $IMAGE
           sleep 5
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
-          echo "Code HTTP recette : $HTTP_CODE"
           if [ "$HTTP_CODE" != "200" ]; then
             echo "Validation recette echouee"
             exit 1
@@ -82,4 +80,3 @@ jobs:
           docker tag $SOURCE $TARGET
           docker push $TARGET
           echo "Image promue en production simulee sans rebuild"
-'@ | Out-File -FilePath ".github\workflows\03-promote.yml"

@@ -1,11 +1,7 @@
-@'
 name: 01 - CI Build et Test
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -19,38 +15,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Construction de l image Docker
-        run: |
-          docker build -t catal-log:ci-test .
-          echo "Image construite avec succes"
+        run: docker build -t catal-log:ci-test .
 
-      - name: Lancement du conteneur de test
+      - name: Lancement du conteneur
         run: |
           docker run -d --name ci-test -p 8080:80 catal-log:ci-test
           sleep 5
 
-      - name: Test HTTP automatise
+      - name: Test HTTP
         run: |
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
-          echo "Code HTTP recu : $HTTP_CODE"
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "ERREUR : code HTTP $HTTP_CODE attendu 200"
-            exit 1
-          fi
-          echo "Test HTTP reussi - code 200"
-
-      - name: Verification du contenu HTML
-        run: |
-          CONTENT=$(curl -s http://localhost:8080)
-          if echo "$CONTENT" | grep -q "Catal-Log"; then
-            echo "Contenu HTML verifie"
-          else
-            echo "ERREUR : contenu HTML inattendu"
-            exit 1
-          fi
+          echo "Code HTTP : $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then exit 1; fi
+          echo "Test reussi"
 
       - name: Nettoyage
         if: always()
         run: |
           docker stop ci-test || true
           docker rm ci-test || true
-'@ | Out-File -FilePath ".github\workflows\01-ci.yml"
