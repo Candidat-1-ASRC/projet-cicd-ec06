@@ -1,4 +1,3 @@
-@'
 services:
 
   web:
@@ -28,4 +27,3 @@ networks:
   default:
     name: catal-log-network
     driver: bridge
-'@ | Out-File -FilePath "compose.yml"
