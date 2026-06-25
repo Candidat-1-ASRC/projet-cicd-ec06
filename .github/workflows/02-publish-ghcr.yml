@@ -1,4 +1,4 @@
-name: 02 - Publication GHCR
+name: "02 - Publication GHCR"
 
 on:
   push:
@@ -12,25 +12,21 @@ env:
 
 jobs:
   publish:
-    name: Build et Push vers GHCR
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Connexion a GHCR
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extraction des metadonnees
-        id: meta
+      - id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -39,8 +35,7 @@ jobs:
             type=raw,value=latest
             type=raw,value=1.0.0
 
-      - name: Build et push
-        id: build
+      - id: build
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -48,7 +43,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Affichage du digest
-        run: |
-          echo "Image publiee dans GHCR"
-          echo "Digest : ${{ steps.build.outputs.digest }}"
+      - run: echo "Digest ${{ steps.build.outputs.digest }}"
