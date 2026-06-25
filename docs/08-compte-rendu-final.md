@@ -54,3 +54,12 @@ Un vrai environnement de production nécessiterait :
 - Une gestion avancée des secrets avec un coffre
 - Une politique de déploiement Blue/Green ou Canary
 - Un scanner de vulnérabilités intégré au pipeline
+
+## VM personnelle
+
+Je ne dispose pas de VM personnelle.
+Les tests locaux ont été effectués directement sur mon poste
+de travail Windows avec Docker Desktop installé localement.
+Cette approche est équivalente car elle permet de tester
+le Dockerfile et le compose.yml dans un environnement réel
+avec Docker Engine, sans nécessiter de VM séparée.
