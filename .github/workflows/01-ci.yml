@@ -29,6 +29,27 @@ jobs:
           if [ "$HTTP_CODE" != "200" ]; then exit 1; fi
           echo "Test reussi"
 
+      - name: Verification contenu HTML
+        run: |
+          CONTENT=$(curl -s http://localhost:8080)
+          if echo "$CONTENT" | grep -q "Catal-Log"; then
+            echo "Contenu HTML verifie"
+          else
+            echo "ERREUR contenu HTML inattendu"
+            exit 1
+          fi
+
+      - name: Verification version.json
+        run: |
+          VERSION=$(curl -s http://localhost:8080/version.json)
+          echo "Contenu version.json : $VERSION"
+          if echo "$VERSION" | grep -q "EC06"; then
+            echo "version.json valide"
+          else
+            echo "ERREUR version.json invalide"
+            exit 1
+          fi
+
       - name: Nettoyage
         if: always()
         run: |
