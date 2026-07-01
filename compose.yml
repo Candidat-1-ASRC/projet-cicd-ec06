@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile
     image: catal-log:local
-    container_name: catal-log-web
     ports:
       - "8080:80"
     restart: unless-stopped
