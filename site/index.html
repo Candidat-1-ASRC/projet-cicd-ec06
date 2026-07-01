@@ -14,15 +14,16 @@
             align-items: center;
             justify-content: center;
             color: white;
+            padding: 20px;
         }
         .container {
             text-align: center;
-            padding: 50px 40px;
+            padding: 40px 30px;
             background: rgba(255,255,255,0.05);
             border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1);
-            max-width: 700px;
-            width: 90%;
+            max-width: 800px;
+            width: 100%;
         }
         .label {
             font-size: 13px;
@@ -31,7 +32,7 @@
             margin-bottom: 10px;
         }
         h1 {
-            font-size: 2.8em;
+            font-size: 2.4em;
             font-weight: 700;
             color: #e94560;
             margin-bottom: 8px;
@@ -52,46 +53,48 @@
             background: transparent;
             border: 1px solid #e94560;
             color: #e94560;
-            padding: 5px 16px;
+            padding: 5px 14px;
             border-radius: 50px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
         }
         .pipeline {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 4px;
             margin-bottom: 32px;
+            overflow-x: auto;
         }
         .step {
+            flex: 0 0 auto;
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 14px 20px;
-            font-size: 13px;
+            border-radius: 10px;
+            padding: 10px 8px;
+            font-size: 11px;
             color: #e2e8f0;
-            min-width: 80px;
+            width: 68px;
         }
         .step.active {
             background: rgba(233,69,96,0.25);
             border-color: #e94560;
         }
         .step .icon {
-            font-size: 22px;
-            margin-bottom: 6px;
+            font-size: 18px;
+            margin-bottom: 4px;
         }
         .arrow {
+            flex: 0 0 auto;
             color: #e94560;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
         }
         .footer {
             background: rgba(255,255,255,0.04);
             border-radius: 10px;
             padding: 16px;
-            font-size: 13px;
+            font-size: 12px;
             color: #8892b0;
             line-height: 1.8;
         }
@@ -115,4 +118,14 @@
             <div class="arrow">→</div>
             <div class="step"><div class="icon">📤</div>Publish</div>
             <div class="arrow">→</div>
-            <div class="step"><div
+            <div class="step"><div class="icon">✅</div>Recette</div>
+            <div class="arrow">→</div>
+            <div class="step active"><div class="icon">🏭</div>Production</div>
+        </div>
+        <div class="footer">
+            Version 1.0.0 &mdash; Deploiement automatise via GitHub Actions<br>
+            Image publiee sur GHCR &mdash; Nginx Alpine
+        </div>
+    </div>
+</body>
+</html>
